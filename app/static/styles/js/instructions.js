@@ -15,7 +15,7 @@ function toggleContinue() {
   const button = document.getElementById("continue");
   const consent = document.getElementById("consent");
   const uid = document.getElementById("uid").value;
-  valid = consent.checked && isAlphaNumeric(uid) && uid.length === 512;
+  valid = consent.checked && isAlphaNumeric(uid) && uid.length === 128;
   if (valid) {
     button.classList.add("active");
     button.onclick = function () { window.location = "/?uid=" + uid };

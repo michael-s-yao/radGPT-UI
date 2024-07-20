@@ -93,7 +93,7 @@ def create_app(debug: bool = False) -> Flask:
     class User(db.Model):
         __tablename__ = "results"
 
-        uid = db.Column(db.String(512), primary_key=True)
+        uid = db.Column(db.String(128), primary_key=True)
         time = db.Column(db.String(128), index=True)
         response = db.Column(db.String(int(2 ** 16) - 1), index=True)
 
