@@ -93,9 +93,9 @@ def create_app(debug: bool = False) -> Flask:
     class User(db.Model):
         __tablename__ = "results"
 
-        uid = db.Column(db.Integer, primary_key=True)
+        uid = db.Column(db.String(512), primary_key=True)
         time = db.Column(db.String(128), index=True)
-        response = db.Column(db.String(2048), index=True)
+        response = db.Column(db.String(int(2 ** 16) - 1), index=True)
 
     cases = read_patient_cases(
         os.path.join(
@@ -160,7 +160,7 @@ def create_app(debug: bool = False) -> Flask:
         uid = request.form.get("uid", "None")
         response = [
             {"question": question, "answer": answer}
-            for question, answer in request.form
+            for question, answer in request.form.items()
             if question != "uid"
         ]
         time = datetime.now().astimezone().replace(microsecond=0).isoformat()
