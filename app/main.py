@@ -180,4 +180,4 @@ def create_app(debug: bool = False) -> Flask:
 
 debug = True
 app = create_app(debug=debug)
-app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["DATABASE_URL"]
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ["RESULTS_URL"]
