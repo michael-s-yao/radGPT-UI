@@ -72,7 +72,7 @@ def read_guidelines(
             return list(reader)
 
 
-def create_app(debug: bool = True) -> Flask:
+def create_app(debug: bool = False) -> Flask:
     """
     Creates the Python Flask app with the relevant endpoints.
     Input:
