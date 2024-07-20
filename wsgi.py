@@ -11,7 +11,6 @@ Licensed under the MIT License. Copyright University of Pennsylvania 2024.
 from app.main import create_app
 
 
-if __name__ == "__main__":
-    debug = True
-    app = create_app(debug=debug)
-    app.run()
+debug = True
+app = create_app(debug=debug)
+app.run()
