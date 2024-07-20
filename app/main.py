@@ -157,7 +157,7 @@ def create_app(debug: bool = False) -> Flask:
 
     @app.route("/api/v1/submit", methods=["POST"])
     def write_answers():
-        uid = request.form.pop("uid", "None")
+        uid = request.form.get("uid", "None")
         response = [
             {"question": question, "answer": answer}
             for question, answer in request.form
