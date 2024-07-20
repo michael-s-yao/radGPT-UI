@@ -206,6 +206,7 @@ th {
 
 th, td {
   text-align: center;
+  padding: 0 5px;
 }
 
 tr.green, .llm-legend .green {

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>LLMs for Imaging Study Ordering</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/global.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/instructions.css') }}" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" />
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon" />
+  </head>
+
+  <body>
+    <main>
+      <div style="border-width: 0px;">
+        <h2>Informed Consent Statement and Study Instructions</h2>
+        <p>You are being invited to participate in a research study. Your participation is voluntary, and you should only participate if you completely understand what the study requires and what the risks of participation are. You should ask the study team any questions you have related to participating before agreeing to join the study. If you have any questions about your rights as a human research participant at any time before, during or after participation, please contact the Institutional Review Board (IRB) at 215-898-2614 for assistance.</p>
+
+        <p>This research study is being conducted by researchers <a href="https://obastani.github.io/" target="_blank">Osbert Bastani</a> and <a href="https://picsl.upenn.edu/" target="_blank">James Gee</a> and medical student <a href="https://www.michaelsyao.com/" target="_blank">Michael Yao</a> at the University of Pennsylvania to investigate how large language models (LLMs) can be used as clinical decision support tools for ordering diagnostic imaging studies.</p>
+
+        <p>This study is for research purposes only and your answers to all the questions are anonymous. The aggregated results from this survey will be used to better understand the role that LLMs may serve in clinical workflows. If you agree to join this study, you will be given a series of patient one-liners and asked to order the best diagnostic imaging study to work up each hypothetical patient. In some cases, you will be presented with evidence-based recommendations made by a state-of-the-art LLM; in other cases, no additional information will be presented to you. Please answer each question to the best of your ability. <b>You may access any handwritten or Internet resources at any time, but may not consult with any other participants or individuals.</b></p>
+
+        <p>Your responses will help fulfill the primary objectives and purposes of the study in the legitimate interest of research. This data will be retained for as long as it is needed to perform the study and fulfill the purposes for which it was collected.</p>
+
+        <p>This data will be shared for storage and analysis via Qualtrics and/or RedCap, which are trusted external third parties.</p>
+
+        <p>As required by law, you have the right to request access, correction, removal or restriction of the use of your information in this study and the right to data portability. If you do not want to take part in this research study, you may withdraw now without consequence; however, you will not be able to participate in the study. If you change your mind and wish to withdraw from the study in the future, we will not be able to destroy or withdraw your information because no personal identifiers would have been saved with your response.</p>
+
+        <p>There is minimal risk associated with completing this survey. All responses will be analyzed in aggregate, and your responses are not linked to your identity. As a result, there is a minimal risk of loss of confidentiality. The only personally identifying information that will be collected is the participant's email or phone number (for purposes of sending the $10 electronic payment). After sending out the payment and prior to the researchers reviewing the survey answers, the emails and phone numbers will be deleted from the database. The data from the study may be published; however, you will not be identified by name. The decision to participate or not participate in the survey will not in any way affect your standing at Penn Medicine.</p>
+
+        <p>If you have questions, concerns, complaints, and/or suggestions about this survey, please contact Michael Yao at <a href="mailto:michael.yao@pennmedicine.upenn.edu">michael.yao@pennmedicine.upenn.edu</a>.
+
+        <p style="margin-top: 30px;font-weight: 500;"><input type="checkbox" id="consent" name="consent" value="agree" onclick="toggleContinue();"> I have read and understood the above information and by completing the survey, I express my consent to participating in the study. I understand that if I wish further information regarding my rights as a subject, I may contact the Director in the Office of Regulatory Affairs at the University of Pennsylvania by calling 215-898-2614.</p>
+
+        <fieldset>
+          <legend>Unique Identifier Code:</legend>
+          <input type="text" id="uid" name="uid" placeholder="Check Your Email for Your Unique Identifier Code" onkeyup="toggleContinue();" />
+        </fieldset>
+
+        <button id="continue">Continue to Survey</button>
+      </div>
+    </main>
+    <script src="{{ url_for('static', filename='styles/js/instructions.js') }}"></script>
+  </body>
+</html>

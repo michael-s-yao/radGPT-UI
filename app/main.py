@@ -115,11 +115,16 @@ def create_app(debug: bool = False) -> Flask:
         "Usually not appropriate": "red",
     })
 
+    radiation = u"\u2622 "
     guidelines = {
         data["Topic"]: [
             {
                 "Procedure": study["Procedure"],
-                "Radiation": study["Adult RRL"],
+                "Radiation": (
+                    radiation * int(study["Adult RRL"])
+                    if int(study["Adult RRL"]) > 0
+                    else "None"
+                ),
                 "Category": category_to_format[
                     study["Appropriateness Category"]
                 ]
@@ -136,7 +141,8 @@ def create_app(debug: bool = False) -> Flask:
     @app.route("/", methods=["GET"])
     def index():
         uid = request.args.get("uid", None)
-        assert uid is not None
+        if uid is None:
+            return render_template("instructions.html")
         return render_template(
             "index.html",
             options=read_imaging_studies(),
