@@ -172,7 +172,5 @@ def create_app(debug: bool = False) -> Flask:
     return app
 
 
-if __name__ == "__main__":
-    debug = True
-    app = create_app(debug=debug)
-    app.run(host="127.0.0.1", port=5000, debug=debug)
+debug = True
+app = create_app(debug=debug)

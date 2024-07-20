@@ -8,9 +8,8 @@ Author(s):
 
 Licensed under the MIT License. Copyright University of Pennsylvania 2024.
 """
-from app.main import create_app
+from app.main import app
 
 
-debug = True
-app = create_app(debug=debug)
-app.run()
+if __name__ == "__main__":
+    app.run()
