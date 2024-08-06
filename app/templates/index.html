@@ -47,14 +47,23 @@
               <label>Case {{ loop.index }} / {{ questions | length }}</label>
               <h3>{{ q }}</h3>
               <p>What imaging study would you order for this patient? If no imaging is indicated, select "None".</p>
-              <input type="text" name="Q{{ loop.index }}" id="Q{{ loop.index }}" autocomplete="off", placeholder="i.e., CT, MRI, Radiography, None, ..." list="" />
+              <input
+                type="text"
+                name="Q{{ loop.index }}"
+                id="Q{{ loop.index }}"
+                autocomplete="off"
+                placeholder="i.e., CT, MRI, Radiography, None, ..."
+                list=""
+                onfocus="this.value='';"
+                onchange="this.blur();"
+              />
             </div>
           {% endfor %}
         </form>
 
         <datalist id="imaging_studies" role="listbox">
-          {% for imaging_study in options %}
-            <option value="{{ imaging_study }}">{{ imaging_study }}</option>
+          {% for imaging_pretty, imaging_search in zip(options_pretty, options) %}
+            <option value="{{ imaging_search }}">{{ imaging_pretty }}</option>
           {% endfor %}
         </datalist>
 

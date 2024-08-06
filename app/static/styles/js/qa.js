@@ -10,10 +10,15 @@ function checkIfFinished() {
   const options = [...studies.options].map((opt) => opt.value);
   let isFinished = [...document.querySelectorAll(".question")]
     .every((x) => options.includes(x.querySelector("input").value));
-  if (isFinished)
+  if (isFinished) {
     document.getElementById("submit").style.display = "block";
-  else
+    window.onbeforeunload = null;
+  } else {
     document.getElementById("submit").style.display = "none";
+    window.onbeforeunload = function() {
+      return true;
+    };
+  }
 }
 
 function linkDatalist(question) {
@@ -23,9 +28,21 @@ function linkDatalist(question) {
     input.style.borderRadius = "8px 8px 0 0";
   };
 
+  document.getElementsByTagName("body")[0].onclick = function(e) {
+    if (
+      (e.target instanceof HTMLInputElement) ||
+      (e.target instanceof HTMLOptionElement) ||
+      (e.target instanceof HTMLButtonElement)
+    )
+      return;
+    studies.style.display = "none";
+    input.style.borderRadius = "8px";
+    input.style.borderColor = null;
+  }
+
   for (let option of studies.options) {
-    option.onclick = function () {
-      input.value = option.value;
+    option.onclick = function (e) {
+      input.value = option.text;
       studies.style.display = "none";
       input.style.borderRadius = "8px";
       input.style.borderColor = null;
@@ -72,6 +89,9 @@ function unlinkDatalist() {
       input.onkeyup = null;
       input.style.borderColor = null;
     });
+
+  for (let option of studies.options)
+    option.style.display = "block";
 };
 
 function addActive(x) {
@@ -92,17 +112,21 @@ function removeActive(x) {
 
 function validateInput(event) {
   const options = [...studies.options]
-    .filter((x) => x.value.length > 0)
-    .map((x) => x.value.substring(0, x.value.length));
+    .filter((x) => x.text.length > 0)
+    .map((x) => x.text.substring(0, x.text.length));
   const activeElement = NonNull(document.querySelector(".question.active"));
   const input = NonNull(activeElement.querySelector("input"));
   const isValid = options.includes(input.value);
-  if (isValid) {
-    if (event.target.id.toLowerCase() === "next")
-      activeView = Math.min(activeView + 1, numQuestions);
-    else
-      activeView = Math.max(activeView - 1, 1);
+  if (((input.value.length === 0) || (isValid)) && (event.target.id.toLowerCase() === "back")) {
+    activeView = Math.max(activeView - 1, 1);
     setView(activeView);
+    for (let option of studies.options)
+      option.style.display = "block";
+  } else if ((isValid) && (event.target.id.toLowerCase() == "next")) {
+    activeView = Math.min(activeView + 1, numQuestions);
+    setView(activeView);
+    for (let option of studies.options)
+      option.style.display = "block";
   } else {
     input.style.borderColor = "var(--red)"; 
   }
@@ -147,6 +171,9 @@ setView(activeView);
 document.addEventListener("click", checkIfFinished);
 document.getElementById("submit").onclick = function() {
   return confirm("I confirm that I have completed this task to the best of my ability.");
+};
+window.onbeforeunload = function() {
+  return true;
 };
 
 const interval = 1000;

@@ -40,6 +40,32 @@ def read_imaging_studies(
         return [study.strip() for study in f.readlines()] + ["None"]
 
 
+def add_alternate_matches(
+    studies: Sequence[str], sep_token: str = "<|***|>"
+) -> Sequence[str]:
+    """
+    Appends alternate search matches for the input imaging studies.
+    Input:
+        studies: a list of the input imaging studies.
+        sep_token: the token to separate the input match strings.
+    Returns:
+        A list of the studies with their appended alternative search matches.
+    """
+    def add_alts(study: str) -> str:
+        if "radiograph" in study.lower():
+            study += sep_token + "X-ray" + sep_token + "X ray"
+        if "radiograph" in study.lower() and "chest" in study.lower():
+            study += sep_token + "CXR"
+            study += sep_token + "Chest X-ray" + sep_token + "Chest X ray"
+        if "mri" in study.lower():
+            study += "Magnetic Resonance Imaging"
+        if "ct" in study.lower():
+            study += "Computed Tomography"
+        return study
+
+    return list(map(add_alts, studies))
+
+
 def read_patient_cases(
     fn: Union[Path, str] = os.path.join(
         os.path.dirname(__file__), "static", "assets", "cases.jsonl"
@@ -169,10 +195,13 @@ def create_app(debug: bool = False) -> Flask:
         show_guidance = [show_guidance[idx] for idx in sort_idxs]
         show_guidance_str = "".join([str(int(b)) for b in show_guidance])
         sort_idxs = ",".join([str(idx) for idx in sort_idxs])
+        options_pretty = read_imaging_studies()
+        options = add_alternate_matches(options_pretty)
 
         return render_template(
             "index.html",
-            options=read_imaging_studies(),
+            options=options,
+            options_pretty=options_pretty,
             questions=questions,
             guidelines=guidelines,
             show_guidance=show_guidance,
@@ -202,9 +231,9 @@ def create_app(debug: bool = False) -> Flask:
         response = []
 
         prog = re.compile(r"Q\d+")
-        qas = sorted(
-            [(q, a) for q, a in request.form.items()],
-            key=lambda _qa: prog.fullmatch(_qa[0]) is not None
+        qas = [(q, a) for q, a in request.form.items()]
+        qas = list(
+            filter(qas, key=lambda _qa: prog.fullmatch(_qa[0]) is not None)
         )
         answers = list(map(lambda _qa: _qa[-1], qas))
         aidxs = []
