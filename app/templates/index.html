@@ -16,15 +16,38 @@
   <body>
     <main>
       <div>
+        {% if "0" == timed %}
+          <p id="timer">
+            <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 5px;"></i> Untimed
+          </p>
+        {% else %}
+          <div id="countdown-timer">
+            <p id="timer">
+              <i class="fa fa-clock-o" aria-hidden="true" style="margin-right: 5px;"></i>
+              <span id="hours">0</span>
+              <span class="timer-unit">Hours</span>
+              <span id="minutes">50</span>
+              <span class="timer-unit">Minutes</span>
+              <span id="seconds">00</span>
+              <span class="timer-unit">Seconds</span>
+            </p>
+          </div>
+        {% endif %}
         <form action="/api/v1/submit" method="POST">
           <input type="submit" class="submit" id="submit" value="Submit My Answers" />
           <input type="text" name="uid" id="uid" value="{{ uid }}" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="with_guidance" id="with_guidance" value="{{ show_guidance_str }}" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="sort_idxs" id="sort_idxs" value="{{ sort_idxs }}" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="duration" id="duration" value="0" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="seed" id="seed" value="{{ seed }}" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="timed" id="timed" value="{{ timed }}" style="display:none !important" tabindex="-1" autocomplete="off" />
+          <input type="text" name="name" id="name" style="opacity: 0 !important;position: absolute !important;top: 0 !important;left: 0 !important;height: 0 !important;width: 0 !important;z-index: -1 !important;" tabindex="-1" autocomplete="off" placeholder="Your name here" />
           {% for q in questions %}
             <div id="Q{{ loop.index }}-box" class="question">
               <label>Case {{ loop.index }} / {{ questions | length }}</label>
               <h3>{{ q }}</h3>
               <p>What imaging study would you order for this patient? If no imaging is indicated, select "None".</p>
-              <input type="text" name="Q{{ loop.index }}" id="Q{{ loop.index }}" autocomplete="off", placeholder="Your Answer Here" list="" />
+              <input type="text" name="Q{{ loop.index }}" id="Q{{ loop.index }}" autocomplete="off", placeholder="i.e., CT, MRI, Radiography, None, ..." list="" />
             </div>
           {% endfor %}
         </form>
@@ -39,37 +62,45 @@
         <button class="nav" id="next">Next Case&emsp;<i class="fa fa-angle-right"></i></button>
       </div>
       <div>
-        <p class="acr-title"><a href="https://www.acr.org/Clinical-Resources/ACR-Appropriateness-Criteria" target="_blank">ACR Appropriateness Criteria</a></p>
-        <label class="acr-info"><i class="fa fa-info-circle" style="padding: 0 5px 0 0;margin: 0;"></i> A large language model (LLM) has identified the following 3 ACR Appropriateness Criteria topics that may describe the patient's presentation. The topics are listed from <em>most</em> to <em>least</em> relevant according to the LLM. Click on a topic to see the evidence-based imaging recommendations from the ACR for each of the topics.</label>
-        <label class="llm-legend-title">Legend</label>
-        <ul class="llm-legend">
-          <li><span class="green"></span> Usually appropriate</li>
-          <li><span class="yellow"></span> May be appropriate</li>
-          <li><span class="red"></span> Usually not appropriate</li>
-          <li><span class="gray"></span> Disputed/Insufficient Evidence</li>
-        </ul>
+        <p class="acr-title">LLM Guidance</p>
+        <div id="acr-info-block">
+          <label class="acr-info"><i class="fa fa-info-circle" style="padding: 0 5px 0 0;margin: 0;"></i> A large language model (LLM) has identified the following 3 <a href="https://www.acr.org/Clinical-Resources/ACR-Appropriateness-Criteria" target="_blank">ACR Appropriateness Criteria</a> topics that may describe the patient's presentation. The topics are listed from <em>most</em> to <em>least</em> relevant according to the LLM. Click on a topic to see the evidence-based imaging recommendations from the ACR for each of the topics.</label>
+          <label class="llm-legend-title">Legend</label>
+          <ul class="llm-legend">
+            <li><span class="green"></span> Usually appropriate</li>
+            <li><span class="yellow"></span> May be appropriate</li>
+            <li><span class="red"></span> Usually not appropriate</li>
+            <li><span class="gray"></span> Disputed/Insufficient Evidence</li>
+          </ul>
+        </div>
 
-    {% for rec in guidelines %}
-      {% set outer_loop = loop %}
-      {% for data in rec %}
-        <details id="guidelines-Q{{ outer_loop.index }}-T{{ loop.index }}">
-          <summary>{{ data["Topic"] }}</summary>
-          <table>
-            <tr>
-              <th>Imaging Study</th>
-              <th>Radiation</th>
-            </tr>
-            {% for row in data["Table"] %}
-              <tr class="{{ row['Category'] }}">
-                <td>{{ row["Procedure"] }}</td>
-                <td>{{ row["Radiation"] }}</td>
-              </tr>
-            {% endfor %}
-          </table>
-        </details>
-      {% endfor %}
-    {% endfor %}
-    <footer>&copy;2024 <a href="https://trustml.github.io/" target="_blank">trustML@Penn</a>. All rights reserved.</footer>
+        {% for rec, show in zip(guidelines, show_guidance) %}
+          {% set outer_loop = loop %}
+          {% if show %}
+            {% for data in rec %}
+              <details id="guidelines-Q{{ outer_loop.index }}-T{{ loop.index }}">
+                <summary>{{ data["Topic"] }}</summary>
+                <table>
+                  <tr>
+                    <th>Imaging Study</th>
+                    <th>Radiation</th>
+                  </tr>
+                  {% for row in data["Table"] %}
+                    <tr class="{{ row['Category'] }}">
+                      <td>{{ row["Procedure"] }}</td>
+                      <td>{{ row["Radiation"] }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+              </details>
+        {% endfor %}
+          {% else %}
+            <details id="guidelines-Q{{ outer_loop.index }}-T1">
+              <summary style="font-size: 14px; opacity: 0.7;cursor: not-allowed;">LLM guidance is not available for this patient scenario.</summary>
+            </details>
+          {% endif %}
+        {% endfor %}
+        <footer>&copy;2024 <a href="https://trustml.github.io/" target="_blank">trustML@Penn</a>. All rights reserved.</footer>
       </div>
     </main>
     <script src="{{ url_for('static', filename='styles/js/qa.js') }}"></script>

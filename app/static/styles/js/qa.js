@@ -116,6 +116,7 @@ function resetView() {
   unlinkDatalist();
   [...document.querySelectorAll("details")]
     .map((x) => x.style.display = "none");
+  document.querySelector("#acr-info-block").classList.remove("active");
 }
 
 function setView(idx) {
@@ -132,6 +133,9 @@ function setView(idx) {
     document.querySelector("button#back").style.display = "none";
   if (idx === numQuestions)
     document.querySelector("button#next").style.display = "none";
+  const withGuidance = document.getElementById("with_guidance").value;
+  if (withGuidance[idx - 1] === "1")
+    document.querySelector("#acr-info-block").classList.add("active");
 }
 
 var activeView = 1;
@@ -144,3 +148,31 @@ document.addEventListener("click", checkIfFinished);
 document.getElementById("submit").onclick = function() {
   return confirm("I confirm that I have completed this task to the best of my ability.");
 };
+
+const interval = 1000;
+const totalMinutes = 50;
+var totalSteps = Math.round(totalMinutes * 60);
+var expected = Date.now() + interval;
+setTimeout(updateCountdown, interval);
+
+function updateCountdown() {
+  var dt = Date.now() - expected;
+  if (dt > interval)
+    expected += interval * Math.floor(dt / interval);
+
+  if (document.getElementById("timed").value !== "0") {
+    const hours = Math.floor((totalSteps % (3600 * 24)) / 3600);
+    const minutes = Math.floor((totalSteps % (3600)) / 60);
+    const seconds = Math.floor(totalSteps % 60);
+
+    document.getElementById("hours").innerText = Math.max(hours, 0);
+    document.getElementById("minutes").innerText = Math.max(minutes, 0);
+    document.getElementById("seconds").innerText = Math.max(seconds, 0);
+  }
+
+  expected += interval;
+  totalSteps = totalSteps - 1;
+  document.getElementById("duration")
+    .value = (Math.round(totalMinutes * 60) - totalSteps).toString();
+  setTimeout(updateCountdown, Math.max(0, interval - dt));
+}

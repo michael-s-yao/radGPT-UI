@@ -235,6 +235,14 @@ tr.red, .llm-legend .red {
   padding: 0 0 5px 0;
 }
 
+#acr-info-block {
+  display: none;
+}
+
+#acr-info-block.active {
+  display: block;
+}
+
 .llm-legend {
   list-style: none;
   display: block;
@@ -262,4 +270,17 @@ label.llm-legend-title {
   height: 14px;
   margin: 0 6px 0 0;
   transform: translateY(3px);
+}
+
+#countdown {
+  padding: 40px 60px;
+  border: 0px solid transparent;
+}
+
+#timer {
+  text-align: right;
+  display: block;
+  width: 100%;
+  opacity: 0.8;
+  font-size: 13px;
 }
