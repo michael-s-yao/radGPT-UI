@@ -7,7 +7,7 @@ function NonNull(item) {
 let studies = document.getElementById("imaging_studies");
 
 function checkIfFinished() {
-  const options = [...studies.options].map((opt) => opt.value);
+  const options = [...studies.options].map((opt) => opt.text);
   let isFinished = [...document.querySelectorAll(".question")]
     .every((x) => options.includes(x.querySelector("input").value));
   if (isFinished) {

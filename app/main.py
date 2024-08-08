@@ -127,8 +127,10 @@ def create_app(debug: bool = False) -> Flask:
     )
 
     @app.route("/", methods=["GET"])
-    def index():
-        uid = request.args.get("uid", None)
+    @app.route("/<demo>", methods=["GET"])
+    def index(demo: Optional[str] = ""):
+        is_demo = demo is not None and (demo.lower() == "demo")
+        uid = "demo" if is_demo else request.args.get("uid", None)
         if uid is None:
             return render_template("instructions.html")
         seed = hash_uid(uid)
@@ -138,7 +140,7 @@ def create_app(debug: bool = False) -> Flask:
                 os.path.dirname(__file__),
                 "static",
                 "assets",
-                "demo.jsonl" if debug else "cases.jsonl"
+                "demo.jsonl" if is_demo else "cases.jsonl"
             )
         )
         questions = list(map(lambda data: data["case"], cases))
@@ -189,6 +191,8 @@ def create_app(debug: bool = False) -> Flask:
 
         rng = np.random.default_rng(seed=seed)
         timed = str(rng.choice(2, size=1, replace=False)[0])
+        if is_demo:
+            timed = "0"
 
         questions = [questions[idx] for idx in sort_idxs]
         guidelines = [guidelines[idx] for idx in sort_idxs]
@@ -227,13 +231,15 @@ def create_app(debug: bool = False) -> Flask:
         if len(request.form.get("name", "")):
             abort(500)
         uid = request.form.get("uid", "None")
+        if uid.lower() == "demo":
+            return redirect(url_for("success"))
         studies = read_imaging_studies()
         response = []
 
         prog = re.compile(r"Q\d+")
         qas = [(q, a) for q, a in request.form.items()]
         qas = list(
-            filter(qas, key=lambda _qa: prog.fullmatch(_qa[0]) is not None)
+            filter(lambda _qa: prog.fullmatch(_qa[0]) is not None, qas)
         )
         answers = list(map(lambda _qa: _qa[-1], qas))
         aidxs = []

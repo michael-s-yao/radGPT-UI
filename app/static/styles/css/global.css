@@ -7,12 +7,12 @@
   --green: #50c878;
   --dark-white: #ddd;
   --light-black: #5f5f5f;
-  --font: "Figtree", "Arial", "Helvetica", sans-serif;
+  --font: "__Inter_aaf875","__Inter_Fallback_aaf875", ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
   font-family: var(--font);
-  font-weight: 400;
+  font-weight: 300;
   font-style: normal;
   font-size: 20px;
   letter-spacing: 0.25px;
@@ -65,7 +65,7 @@ label {
 }
 
 h3 {
-  font-weight: 500;
+  font-weight: 300;
   margin: 0;
   padding: 0 0 25px 0;
 }
@@ -126,7 +126,7 @@ input.submit {
   border-radius: 8px;
   font-family: inherit;
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 300;
   color: inherit;
   background-color: transparent;
   cursor: pointer;
@@ -225,7 +225,7 @@ tr.red, .llm-legend .red {
   text-align: center;
   margin: 0 0 10px 0;
   padding: 0;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .acr-info {
@@ -253,7 +253,7 @@ tr.red, .llm-legend .red {
 label.llm-legend-title {
   font-size: 14px;
   opacity: 1;
-  font-weight: 500;
+  font-weight: 400;
   display: block;
   padding: 0;
   margin: 0 0 5px 0;
