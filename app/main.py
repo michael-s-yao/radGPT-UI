@@ -17,7 +17,9 @@ import re
 import requests
 from collections import defaultdict
 from datetime import datetime
-from flask import Flask, abort, render_template, redirect, request, url_for
+from flask import (
+    Flask, abort, render_template, redirect, request, send_file, url_for
+)
 from pathlib import Path
 from typing import Any, Dict, Sequence, Optional, Union
 from urllib.parse import quote_plus
@@ -289,6 +291,12 @@ def create_app(debug: bool = False) -> Flask:
         return redirect(url_for("error/post"))
 
     app.jinja_env.filters["zip"] = zip
+
+    @app.route("/.well-known/pki-validation/<filename>")
+    def dcv(filename):
+        if filename == "93EB9137C4A8C66139AEE38565ADE596.txt":
+            return send_file("93EB9137C4A8C66139AEE38565ADE596.txt")
+        abort(500)
 
     return app
 
