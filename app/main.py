@@ -294,8 +294,8 @@ def create_app(debug: bool = False) -> Flask:
 
     @app.route("/.well-known/pki-validation/<filename>")
     def dcv(filename):
-        if filename == "93EB9137C4A8C66139AEE38565ADE596.txt":
-            return send_file("93EB9137C4A8C66139AEE38565ADE596.txt")
+        if filename == "A9DE620C59AED364D4BB26A0BCEE2208.txt":
+            return send_file("A9DE620C59AED364D4BB26A0BCEE2208.txt")
         abort(500)
 
     return app
