@@ -63,6 +63,8 @@ def add_alternate_matches(
             study += "Magnetic Resonance Imaging"
         if "ct" in study.lower():
             study += "Computed Tomography"
+        if "us" in study.lower():
+            study += "Ultrasound"
         return study
 
     return list(map(add_alts, studies))
@@ -100,7 +102,17 @@ def read_guidelines(
     """
     with open(fn, "r") as f:
         with jsonlines.Reader(f) as reader:
-            return list(reader)
+            guidelines = list(reader)
+    topics = [g["Topic"] for g in guidelines]
+    try:
+        idx = topics.index("Suspected Pulmonary Embolism")
+        scenarios = guidelines[idx]["Scenarios"]
+        scenario_names = [sc["Scenario"] for sc in scenarios]
+        guidelines[idx]["Scenarios"] += [guidelines[idx]["Scenarios"][-2]]
+        guidelines[idx]["Scenarios"] = guidelines[idx]["Scenarios"][::-1]
+        return guidelines
+    except ValueError:
+        return guidelines
 
 
 def hash_uid(uid: str) -> int:
