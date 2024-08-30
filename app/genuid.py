@@ -12,19 +12,28 @@ import hashlib
 import random
 import uuid
 
+from main import hash_uid
+
 
 @click.command()
 @click.option(
     "-u", "--email", required=True, type=str, help="User email."
 )
-def main(email: str):
+@click.option(
+    "--seed/--uid", "is_seed", default=False, help="Return seed or UID."
+)
+def main(email: str, is_seed: bool = False):
     """Converts an input email address into a UUID."""
     seed = sum([ord(c) for c in email.lower()])
     rng = random.Random()
     rng.seed(seed)
     salt = str(uuid.UUID(int=rng.getrandbits(128), version=4))
     email = salt + email.lower()
-    click.echo(hashlib.sha512(email.encode("utf-8")).hexdigest())
+    uid = hashlib.sha512(email.encode("utf-8")).hexdigest()
+    if not is_seed:
+        click.echo(uid)
+        return
+    click.echo(hash_uid(uid))
 
 
 if __name__ == "__main__":
