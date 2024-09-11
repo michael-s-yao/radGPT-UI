@@ -25,19 +25,6 @@ from typing import Any, Dict, Sequence, Optional, Union
 from urllib.parse import quote_plus
 
 
-PGY_PARTICIPANTS = [
-    "7fcf2f33990f1031ffa1b3b1a1af65ddd74d82c1ba2cb10b502b55d22a7d531c769a4b2f5f1555ddb781cee970b9200c25d969a6099d1842d3cc8317dc6877e3",
-    "072ae74ae00365202734f5b8dd420d67fbbb636f14e4d7b024cd06b0573f713ddd90880d386a061e45c251062d7110c54ca8da09a01714a1a99bad20a7f5b635",
-    "77f2092e7247d9664bddb96fccd115314ecb55fd05667bd5a5d981a3125a753af93ddbdb4ac9489604dbee4df94a2a928f75952d88f23f62641f0fd31a8dd780",
-    "96e8f28c6c75a9ddf806dc55ef0f71df984e95c750d206b7649dfa5d9bc2a06084dd47437de5027e07be20d96815da32bedd86db71ab3d7aa8ddcf23ce7a5d03",
-    "47333aaf4d3eba3e72c6773d3babc413ab6e1aecbd1a35b9cb415c44cc2246a5d60e6ab4f9c5a1b7344699187d9e627b9e9e777c4f13bf5bbe943534e08a56c0",
-    "3506131688abd9bf086c20e14d9a4f27a420cbb624b8c9c85d8014f9a57748bf7ed43817959291fb6698d8af6458aad46fe43fd35b1e79f5aaece9d31f02c9b7",
-    "cdda740ff28719614f6df6e0f2c9e70273ce359adbd557895e5b763f94b875ae5713c8b11bc0b060bc59a3db65c5704e437a0026ef17d1f0a338dd0dace545d8",
-    "875e88de37a21b1a26850de1f1c5eb21dd8f3234f8be19e991d387b278b4cfae381533ab71f3cf6fc474ca178677e01d04a2e10b9a7d0a2ae9e6297ec6fe4878",
-    "407377c6c6f7a3e78a58b4bbf38e879e0c24c3f011f59cf640b128e251ce45df8a2e74e63954a61258c4928bc3b758b6178f86599e00b6f309ce913feae14c9a",
-]
-
-
 def read_imaging_studies(
     fn: Union[Path, str] = os.path.join(
         os.path.dirname(__file__), "static", "assets", "studies.txt"
@@ -119,8 +106,6 @@ def read_guidelines(
     topics = [g["Topic"] for g in guidelines]
     try:
         idx = topics.index("Suspected Pulmonary Embolism")
-        scenarios = guidelines[idx]["Scenarios"]
-        scenario_names = [sc["Scenario"] for sc in scenarios]
         guidelines[idx]["Scenarios"] += [guidelines[idx]["Scenarios"][-2]]
         guidelines[idx]["Scenarios"] = guidelines[idx]["Scenarios"][::-1]
         return guidelines
@@ -220,7 +205,7 @@ def create_app(debug: bool = False) -> Flask:
         timed = str(rng.choice(2, size=1, replace=False)[0])
         if is_demo:
             timed = "0"
-        if uid in PGY_PARTICIPANTS:
+        else:
             timed = "1"
 
         questions = [questions[idx] for idx in sort_idxs]
