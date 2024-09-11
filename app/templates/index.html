@@ -87,7 +87,11 @@
           {% set outer_loop = loop %}
           {% if show %}
             {% for data in rec %}
-              <details id="guidelines-Q{{ outer_loop.index }}-T{{ loop.index }}">
+              {% if loop.first %}
+                <details id="guidelines-Q{{ outer_loop.index }}-T{{ loop.index }}" open>
+              {% else %}
+                <details id="guidelines-Q{{ outer_loop.index }}-T{{ loop.index }}">
+              {% endif %}
                 <summary>{{ data["Topic"] }}</summary>
                 <table>
                   <tr>
